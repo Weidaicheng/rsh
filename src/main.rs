@@ -11,9 +11,14 @@ fn main() {
         stdin().read_line(&mut input)
             .unwrap();
 
-        let command = input.trim();
+        let mut parts = input.trim()
+            .split_whitespace();
+        let command = parts.next()
+            .unwrap();
+        let args = parts;
 
         let child = Command::new(command)
+            .args(args)
             .spawn();
         
         match child {
