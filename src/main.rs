@@ -27,6 +27,7 @@ fn main() {
                     handle_error(e);
                 }
             },
+            "exit" => return,
             command => {
                 let child = Command::new(command)
                     .args(args)
