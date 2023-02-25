@@ -28,6 +28,36 @@ fn main() {
                 }
             },
             "exit" => return,
+            "echo" => {
+                let mut values: Vec<String> = Vec::new();
+                for arg in args {
+                    if arg.starts_with("$") {
+                        match env::var(arg.replace("$", "")) {
+                            Ok(value) => {
+                                values.push(value);
+                            },
+                            Err(_) => {
+                                values.push(String::from(arg));
+                            }
+                        };
+                    } else {
+                        values.push(String::from(arg));
+                    }
+                }
+
+                let child = Command::new(command)
+                    .args(values)
+                    .spawn();
+                
+                match child {
+                    Ok(mut child) => {
+                        if let Err(e) = child.wait() {
+                            handle_error(e);
+                        }
+                    },
+                    Err(e) => handle_error(e)
+                };
+            },
             command => {
                 let child = Command::new(command)
                     .args(args)
