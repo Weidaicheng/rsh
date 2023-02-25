@@ -37,7 +37,7 @@ fn main() {
                                 values.push(value);
                             },
                             Err(_) => {
-                                values.push(String::from(arg));
+                                values.push(String::from(""));
                             }
                         };
                     } else {
@@ -58,6 +58,19 @@ fn main() {
                     Err(e) => handle_error(e)
                 };
             },
+            "export" => {
+                let mut args = args;
+                let key = args.next().map_or("", |x| x);
+                let value = args.next().map_or("", |x| x);
+
+                if key == "" {
+                    for (key, value) in env::vars() {
+                        println!("{}={}", key, value);
+                    }
+                } else {
+                    env::set_var(key, value);
+                }
+            }
             command => {
                 let child = Command::new(command)
                     .args(args)
